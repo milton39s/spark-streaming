@@ -1,0 +1,89 @@
+plugins {
+    id 'java'
+    id 'scala'
+    id 'idea'
+    id 'maven-publish'
+    id "com.github.johnrengelman.shadow" version "5.2.0"
+    id "com.github.maiflai.scalatest" version "0.26"
+}
+
+
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
+
+repositories {
+    mavenCentral()
+    mavenLocal()
+}
+
+sourceSets {
+    main {
+
+        scala {
+            srcDirs = ['src/main/scala']
+        }
+    }
+}
+
+configurations {
+    implementation {
+        canBeResolved = true
+        canBeConsumed = true
+    }
+
+    runTimeJar {
+        canBeResolved = true
+        canBeConsumed = true
+    }
+}
+
+dependencies {
+
+    implementation "org.scala-lang:scala-library:${scalaVersion}"
+    implementation "org.scala-lang:scala-reflect:${scalaVersion}"
+    implementation "org.scala-lang:scala-compiler:${scalaVersion}"
+
+    implementation "com.typesafe:config:1.4.0"
+
+    implementation "org.apache.spark:spark-core_${scalaMajorVersion}:${sparkVersion}"
+    implementation "org.apache.spark:spark-sql_${scalaMajorVersion}:${sparkVersion}"
+
+
+}
+
+
+test {
+    maxHeapSize = '1G'
+}
+
+
+task packageDistribution(type: Tar) {
+    archiveFileName = "${rootProject.name}-${rootProject.version}-full.tar.gz"
+    destinationDirectory = file("$buildDir/archive")
+
+    into("/jar") {
+        from "$buildDir/libs/"
+        include("*all.jar")
+    }
+}
+
+tasks.packageDistribution.dependsOn tasks.shadowJar
+tasks.build.dependsOn tasks.packageDistribution
+
+publishing {
+    repositories {
+        maven {
+            name = "GitHubPackages"
+            url = uri("https://maven.pkg.github.com/newscorp-ghfb/wsj-archimedes")
+            credentials {
+                username = project.findProperty("gpr.user") ?: System.getenv("USERNAME")
+                password = project.findProperty("gpr.key") ?: System.getenv("PASSWORD")
+            }
+        }
+    }
+    publications {
+        gpr(MavenPublication) {
+            from(components.java)
+        }
+    }
+}
