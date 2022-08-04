@@ -1,0 +1,9 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="streamRateSource" type="Application" factoryName="Application">
+    <option name="MAIN_CLASS_NAME" value="streamRateSource" />
+    <module name="spark-streaming.main" />
+    <method v="2">
+      <option name="Make" enabled="true" />
+    </method>
+  </configuration>
+</component>

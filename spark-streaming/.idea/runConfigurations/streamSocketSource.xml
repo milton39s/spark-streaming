@@ -1,0 +1,9 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="streamSocketSource" type="Application" factoryName="Application">
+    <option name="MAIN_CLASS_NAME" value="streamSocketSource" />
+    <module name="spark-streaming.main" />
+    <method v="2">
+      <option name="Make" enabled="true" />
+    </method>
+  </configuration>
+</component>
